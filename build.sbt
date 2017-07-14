@@ -11,14 +11,14 @@ lazy val commonSettings = Seq(
   scalacOptions ++= Seq(
     "-deprecation",
     "-unchecked",
-    "-Yinline-warnings",
     "-language:implicitConversions",
     "-language:reflectiveCalls",
     "-language:postfixOps",
     "-language:existentials",
-    "-feature"),
-  publishTo <<= version { (v: String) =>
-    if (v.trim.endsWith("SNAPSHOT"))
+    "-feature"
+  ),
+  publishTo := {
+    if (isSnapshot.value)
       Some("LocationTech Nexus Snapshot Repository" at "https://repo.locationtech.org/content/repositories/sfcurve-snapshots")
     else
       Some("LocationTech Nexus Repository" at "https://repo.locationtech.org/content/repositories/sfcurve-releases")
@@ -48,7 +48,7 @@ lazy val commonSettings = Seq(
         </developer>
       </developers>),
   shellPrompt := { s => Project.extract(s).currentProject.id + " > " }
-) ++ net.virtualvoid.sbt.graph.Plugin.graphSettings
+)
 
 lazy val root =
   Project("sfcurve", file("."))
@@ -56,24 +56,24 @@ lazy val root =
     .settings(commonSettings: _*)
 
 lazy val api: Project =
-  Project("api", file("api"))
+  project
     .settings(commonSettings: _*)
 
 lazy val zorder: Project =
-  Project("zorder", file("zorder"))
+  project
     .settings(commonSettings: _*)
     .dependsOn(api)
 
 lazy val hilbert: Project =
-  Project("hilbert", file("hilbert"))
+  project
     .settings(commonSettings: _*)
     .dependsOn(api)
 
-lazy val geowaveIndex: Project =
-  Project("geowave-index", file("geowave-index"))
+lazy val `geowave-index`: Project =
+  project
     .settings(commonSettings: _*)
 
 lazy val benchmarks: Project =
-  Project("benchmarks", file("benchmarks"))
+  project
     .settings(commonSettings: _*)
     .dependsOn(api, zorder, hilbert)
